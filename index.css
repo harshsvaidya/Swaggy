@@ -24,15 +24,67 @@
     width: 100px;
   }
   
-  .header {
+  .header { 
+    /* position: fixed; */
+    top: 0;
+    left: 0;
+    width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 2px solid #ddd;
-    padding: 10px 20px;
-    background-color: #fff;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  }
+    padding: 15px 30px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #e0e0e0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000; /* Keeps header on top of other content */
+}
+
+.header .logo-container {
+    display: flex;
+    align-items: center;
+    gap: 10px; 
+}
+
+.header .logo {
+    height: 60px; 
+    width: auto;
+}
+
+.header .nav-item ul {
+    display: flex;
+    gap: 20px; 
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.header .nav-item li {
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 0.3s ease; 
+}
+
+.header .nav-item li:hover {
+    color: #0073e6;
+}
+
+.header .login {
+    padding: 8px 16px;
+    border: 1px solid #0073e6;
+    background-color: transparent;
+    color: #0073e6;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.header .login:hover {
+    background-color: #4bf109;
+    color: #ffffff;
+}
+
   
   .nav-item > ul {
     font-size: 18px;
@@ -69,7 +121,6 @@
     justify-content: center;
   }
   
-  /* Restaurant card styling */
   .res-card {
     width: 220px;
     padding: 15px;
@@ -107,7 +158,6 @@
     margin: 5px 0;
   }
   
-  /* For ratings and delivery time */
   .res-card h4:last-of-type {
     color: #3498db;
     font-weight: 500;
@@ -147,7 +197,6 @@
   position: relative;
 }
 
-/* Optional inner content placeholders */
 .shimmer-card::before {
   content: '';
   display: block;
