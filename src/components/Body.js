@@ -8,6 +8,10 @@ const Body = () => {
   const [filteredListofRestaurants, setFilteredListofRestaurants] = useState([]);
   const [loading, setLoading] = useState(true); // Loading state for shimmer
   const [searchText, setSearchText] = useState("");
+ // always call useState (used for creating local state variable) hooks inside the body component
+ // never use useState hook inside if else condition or inside for loop.
+
+
   // to know the superpowers of react lets see how many times body wilL rendered. We know that each time we enter 
   // something in text react will re-render the whole body using reconciliation procedure
   console.log("Body Rendered");
