@@ -4,9 +4,9 @@ import { CDN_URL } from '../../utils/constants';
 import Shimmer from './Shimmer';
 
 const Body = () => {
-  const [listofResturants, setListofResturants] = useState([]);
-  const [filteredListofResturants, setFilteredListofResturants] = useState([]);
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [listofRestaurants, setListofRestaurants] = useState([]);
+  const [filteredListofRestaurants, setFilteredListofRestaurants] = useState([]);
+  const [loading, setLoading] = useState(true); // Loading state for shimmer
 
   useEffect(() => {
     fetchData();
@@ -14,39 +14,37 @@ const Body = () => {
 
   const fetchData = async () => {
     try {
-      setLoading(true); // Set loading to true at the beginning of data fetching
-      const data = await fetch(
+      setLoading(true); // Show loading during fetch
+      const response = await fetch(
         "https://www.swiggy.com/dapi/restaurants/list/v5?lat=22.30080&lng=73.20430&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING"
       );
-      const json = await data.json();
+      const data = await response.json();
+      const restaurants = data?.data?.cards[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants;
 
-      const restaurants = json?.data?.cards[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants;
-      if (restaurants && Array.isArray(restaurants)) {
-        setListofResturants(restaurants);
-        setFilteredListofResturants(restaurants);
+      if (Array.isArray(restaurants)) {
+        setListofRestaurants(restaurants);
+        setFilteredListofRestaurants(restaurants);
       } else {
         console.error("No restaurants found in fetched data");
       }
     } catch (error) {
       console.error("Failed to fetch data:", error);
     } finally {
-      setLoading(false); // Set loading to false once data fetching is complete
+      setLoading(false); // Hide loading after fetch completes
     }
   };
 
   const handleFilter = () => {
-    const filteredRestaurants = listofResturants.filter(
+    const filteredRestaurants = listofRestaurants.filter(
       (res) => parseFloat(res.info?.avgRating) > 4.0
     );
-    setFilteredListofResturants(filteredRestaurants);
+    setFilteredListofRestaurants(filteredRestaurants);
   };
 
-  if (loading) {
-    // Display the Shimmer component while loading is true
-    return <Shimmer />;
-  }
-
-  return (
+  // Conditional rendering: show Shimmer if loading, else show content
+  return loading ? (
+    <Shimmer />
+  ) : (
     <div className="body">
       <div className="filter">
         <button className="filter-btn" onClick={handleFilter}>
@@ -54,11 +52,11 @@ const Body = () => {
         </button>
       </div>
       <div className="res-container">
-        {filteredListofResturants.length > 0 ? (
-          filteredListofResturants.map((restaurant) => (
+        {filteredListofRestaurants.length > 0 ? (
+          filteredListofRestaurants.map((restaurant) => (
             restaurant.info && (
               <RestaurantCard
-                key={restaurant.info.id} 
+                key={restaurant.info.id}
                 resName={restaurant.info.name}
                 cuisines={restaurant.info.cuisines ? restaurant.info.cuisines.join(", ") : "Various"}
                 rating={restaurant.info.avgRating || "N/A"}
