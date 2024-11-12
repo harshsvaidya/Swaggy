@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import RestaurantCard from './ResturantCard'; 
+import RestaurantCard from './RestaurantCard'; 
 import { CDN_URL } from '../../utils/constants';
 import Shimmer from './Shimmer';
 

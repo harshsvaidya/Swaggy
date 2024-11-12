@@ -1,14 +1,12 @@
 // Header.js
 import { LOGO_URL } from "../../utils/constants";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Header = () => {
     const [isLogin, setIsLogin] = useState(false);
     console.log("Header rendered")
 
-    useEffect(() => {
-        console.log("useEffect called")
-    }, [isLogin]);
     // Let me show you few concepts about useEffect hooks.
     // here there are three cases in useEffect.
     // 1. If no dependency array is provided that means that useEffect is called on every render.
@@ -25,10 +23,18 @@ const Header = () => {
             </div>
             <div className="nav-item">
                 <ul>
-                    <li>Home</li>
-                    <li>About</li>
-                    <li>Contact Us</li>
-                    <li>Cart</li>
+                    <li>
+                        <Link>Home</Link>
+                    </li>
+                    <li>
+                    <Link to="/about">About</Link>
+                    </li>
+                    <li>
+                    <Link to="/contact">Contact Us</Link>
+                    </li>
+                    <li>
+                    <Link>Cart</Link>
+                    </li>                    
                     <button 
                         className="login" 
                         onClick={() => setIsLogin(!isLogin)}
