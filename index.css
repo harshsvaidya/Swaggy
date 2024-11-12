@@ -108,11 +108,7 @@
     background-color: #f7f7f7;
   }
   
-  .search {
-    padding: 10px;
-    margin-bottom: 20px;
-    font-size: 16px;
-  }
+
   
   .res-container {
     display: flex;
@@ -173,10 +169,7 @@
       font-size: 16px;
     }
   }
-.filter-btn{
-  margin: 10px;
-  cursor: pointer;
-}
+
 .shimmer-container {
   display: flex;
   flex-wrap: wrap;
@@ -228,4 +221,62 @@
 .login{
   padding: 0 20px;
   cursor: pointer;
+}
+.filter {
+  display: flex;
+  align-items: center;
+  gap: 15px; /* Space between search and button */
+  margin-bottom: 20px;
+  padding: 10px 0;
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: 10px; 
+}
+
+.search input[type="search"] {
+  padding: 10px 15px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  width: 250px;
+  transition: border-color 0.3s ease;
+}
+
+.search input[type="search"]:focus {
+  border-color: #0073e6;
+  outline: none;
+}
+
+.search button {
+  padding: 10px 15px;
+  font-size: 16px;
+  color: #fff;
+  background-color: #0073e6;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.search button:hover {
+  background-color: #005bb5;
+}
+
+.filter-btn {
+  padding: 10px 15px;
+  font-size: 16px;
+  color: #0073e6;
+  background-color: transparent;
+  border: 1px solid #0073e6;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.filter-btn:hover {
+  background-color: #0073e6;
+  color: #fff;
 }

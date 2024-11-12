@@ -7,7 +7,10 @@ const Body = () => {
   const [listofRestaurants, setListofRestaurants] = useState([]);
   const [filteredListofRestaurants, setFilteredListofRestaurants] = useState([]);
   const [loading, setLoading] = useState(true); // Loading state for shimmer
-
+  const [searchText, setSearchText] = useState("");
+  // to know the superpowers of react lets see how many times body wilL rendered. We know that each time we enter 
+  // something in text react will re-render the whole body using reconciliation procedure
+  console.log("Body Rendered");
   useEffect(() => {
     fetchData();
   }, []);
@@ -47,6 +50,29 @@ const Body = () => {
   ) : (
     <div className="body">
       <div className="filter">
+        {/* adding search functionality  */}
+        <div className='search'>
+          <input type="search" placeholder="What's on your mind" value={searchText} onChange={(e) => {
+            setSearchText(e.target.value);
+          }}/>
+          <button onClick={() => {
+  console.log(searchText);
+  if (searchText.trim() === "") {
+    // If search text is empty, show all restaurants
+    setFilteredListofRestaurants(listofRestaurants);
+  } else {
+    // Otherwise, filter based on the search text
+    const filteredRestaurants = listofRestaurants.filter((res) =>
+      res.info.name.toLowerCase().includes(searchText.toLowerCase())
+    );
+    setFilteredListofRestaurants(filteredRestaurants);
+  }
+}}>
+  Search
+</button>
+
+
+        </div>
         <button className="filter-btn" onClick={handleFilter}>
           Top Rated Restaurants
         </button>

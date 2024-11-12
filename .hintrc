@@ -7,7 +7,9 @@
       "default",
       {
         "ignore": [
-          "flex-wrap"
+          "flex-wrap",
+          "align-items",
+          "gap"
         ]
       }
     ]
