@@ -1,6 +1,6 @@
 // Header.js
 import { LOGO_URL } from "../../utils/constants";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const Header = () => {
     const [isLogin, setIsLogin] = useState(false);
