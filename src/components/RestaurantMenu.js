@@ -1,84 +1,69 @@
-import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { IMAGE_CDN_URL } from "/utils/constants";
-import Shimmer from "./Shimmer";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faStar,
-  faStopwatch,
-  faMoneyBill,
-} from "@fortawesome/free-solid-svg-icons";
+import React, { useState, useEffect } from 'react';
+import Shimmer from './Shimmer';
+import { useParams } from 'react-router-dom';
+import { MENU_API } from '../../utils/constants';
+
 const RestaurantMenu = () => {
-  const { resId } = useParams();
-  const [res, setRes] = useState({});
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [resInfo, setResInfo] = useState(null);
+
+  const {resId} = useParams();
+
   useEffect(() => {
-    getRestaurantInfo();
+    fetchMenu();
   }, []);
 
-  async function getRestaurantInfo() {
-    const data = await fetch(
-      `https://www.swiggy.com/dapi/menu/v4/full?lat=27.8973944&lng=78.0880129&menuId=${resId}`
-    );
-    const json = await data.json();
-    setRes(json?.data);
-    setIsLoaded(true);
-  }
-  if (!res) return null;
+  const fetchMenu = async () => {
+    try {
+      const data = await fetch(MENU_API + resId);
+      const json = await data.json();
+      console.log(json);
+      setResInfo(json.data); 
+    } catch (error) {
+      console.error("Error fetching menu:", error);
+    }
+  };
 
-  return !isLoaded ? (
-    <Shimmer />
-  ) : (
-    <>
-      <div className="restaurant-info">
-        <div>
-          <img
-            className="res-image"
-            src={IMAGE_CDN_URL + res?.cloudinaryImageId}
-          />
-        </div>
-        <div className="res-details">
-          <p className="res-name">{res?.name}</p>
-          <p className="res-cuisines">{res?.cuisines.join(",")}</p>
-          <p className="res-locality">{res?.locality}</p>
-          <div className="res-ratings">
-            <p>
-              <FontAwesomeIcon icon={faStar} /> {res?.avgRatingString}
-            </p>
-            <p>
-              {" "}
-              <FontAwesomeIcon icon={faStopwatch} /> {res?.sla?.slaString}
-            </p>
-            <p>
-              <FontAwesomeIcon icon={faMoneyBill} /> {res?.costForTwoMsg}
-            </p>
-          </div>
-        </div>
-        <div className="res-offers">
-          <p className="offers">Offers : </p>
-          <p>{res?.aggregatedDiscountInfo?.descriptionList[0].meta} </p>
-          <p>{res?.aggregatedDiscountInfo?.descriptionList[1].meta} </p>
-        </div>
-      </div>
-      {Object.values(res?.menu?.items).map((item) => {
-        return (
-          <div className="item-container" key={item.id}>
-            {item?.cloudinaryImageId === "" ||
-            !item?.cloudinaryImageId ? null : (
-              <div className="item">
-                <div className="item-description">
-                  <p className="item-name">{item?.name}</p>
-                  <p className="item-description">{item?.description}</p>
-                </div>
-                <div className="item-image">
-                  <img src={IMAGE_CDN_URL + item?.cloudinaryImageId} />
-                </div>
-              </div>
-            )}
-          </div>
-        );
-      })}
-    </>
+  if (resInfo === null) {
+    return <Shimmer />;
+  }
+
+  const { name, cuisines, costForTwoMessage } = resInfo.cards[2]?.card?.card?.info || {};
+  const itemCards = resInfo.cards[4]?.groupedCard?.cardGroupMap?.REGULAR.cards[2]?.card?.card?.itemCards || [];
+
+  // Safe price handler
+  const getPrice = (price) => {
+    if (price && !isNaN(price)) {
+      return (price / 100).toFixed(2);
+    }
+    return null; 
+  };
+
+  return (
+    <div className="menu">
+      <h1>{name || "Restaurant Name"}</h1>
+      <h3>Cuisines: {cuisines ? cuisines.join(', ') : "Various Cuisines"}</h3>
+      <h3>{costForTwoMessage || "Cost for two not available"}</h3>
+      <ul>
+        {itemCards.length > 0 ? (
+          itemCards.map((item, index) => {
+            const price = getPrice(item.card?.info?.price);
+            const defaultPrice = getPrice(item.card?.info?.defaultPrice);
+            
+            if (price || defaultPrice) {
+              return (
+                <li key={index}>
+                  {item.card?.info?.name} - Rs. {price || "Not available"} 
+                  {defaultPrice && ` (Default Price: Rs. ${defaultPrice})`}
+                </li>
+              );
+            }
+            return null; 
+          })
+        ) : (
+          <li>No menu items available</li>
+        )}
+      </ul>
+    </div>
   );
 };
 
