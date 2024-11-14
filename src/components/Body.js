@@ -2,19 +2,16 @@ import React, { useState, useEffect } from 'react';
 import RestaurantCard from './RestaurantCard'; 
 import { CDN_URL } from '../../utils/constants';
 import Shimmer from './Shimmer';
+import { Link } from 'react-router-dom';
 
 const Body = () => {
   const [listofRestaurants, setListofRestaurants] = useState([]);
   const [filteredListofRestaurants, setFilteredListofRestaurants] = useState([]);
   const [loading, setLoading] = useState(true); // Loading state for shimmer
   const [searchText, setSearchText] = useState("");
- // always call useState (used for creating local state variable) hooks inside the body component
- // never use useState hook inside if else condition or inside for loop.
 
-
-  // to know the superpowers of react lets see how many times body wilL rendered. We know that each time we enter 
-  // something in text react will re-render the whole body using reconciliation procedure
   console.log("Body Rendered");
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -48,52 +45,57 @@ const Body = () => {
     setFilteredListofRestaurants(filteredRestaurants);
   };
 
-  // Conditional rendering: show Shimmer if loading, else show content
   return loading ? (
     <Shimmer />
   ) : (
     <div className="body">
       <div className="filter">
-        {/* adding search functionality  */}
-        <div className='search'>
-          <input type="search" placeholder="What's on your mind" value={searchText} onChange={(e) => {
-            setSearchText(e.target.value);
-          }}/>
-          <button onClick={() => {
-  console.log(searchText);
-  if (searchText.trim() === "") {
-    // If search text is empty, show all restaurants
-    setFilteredListofRestaurants(listofRestaurants);
-  } else {
-    // Otherwise, filter based on the search text
-    const filteredRestaurants = listofRestaurants.filter((res) =>
-      res.info.name.toLowerCase().includes(searchText.toLowerCase())
-    );
-    setFilteredListofRestaurants(filteredRestaurants);
-  }
-}}>
-  Search
-</button>
-
-
+        {/* Search functionality */}
+        <div className="search">
+          <input
+            type="search"
+            placeholder="What's on your mind"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+          />
+          <button
+            onClick={() => {
+              console.log(searchText);
+              if (searchText.trim() === "") {
+                setFilteredListofRestaurants(listofRestaurants);
+              } else {
+                // Otherwise, filter based on the search text
+                const filteredRestaurants = listofRestaurants.filter((res) =>
+                  res.info.name.toLowerCase().includes(searchText.toLowerCase())
+                );
+                setFilteredListofRestaurants(filteredRestaurants);
+              }
+            }}
+          >
+            Search
+          </button>
         </div>
+
+        {/* Filter Top Rated Restaurants */}
         <button className="filter-btn" onClick={handleFilter}>
           Top Rated Restaurants
         </button>
       </div>
+
       <div className="res-container">
         {filteredListofRestaurants.length > 0 ? (
           filteredListofRestaurants.map((restaurant) => (
-            restaurant.info && (
-              <RestaurantCard
-                key={restaurant.info.id}
-                resName={restaurant.info.name}
-                cuisines={restaurant.info.cuisines ? restaurant.info.cuisines.join(", ") : "Various"}
-                rating={restaurant.info.avgRating || "N/A"}
-                deliveryTime={restaurant.info.sla?.deliveryTime || "N/A"}
-                logoUrl={`${CDN_URL}${restaurant.info.cloudinaryImageId}`} 
-              />
-            )
+            restaurant?.info ? (
+              <Link key={restaurant.info.id} to={"/restaurants/" + restaurant.info.id}>
+                <RestaurantCard
+                  resName={restaurant.info.name}
+                  cuisines={restaurant.info.cuisines ? restaurant.info.cuisines.join(", ") : "Various"}
+                  rating={restaurant.info.avgRating || "N/A"}
+                  deliveryTime={restaurant.info.sla?.deliveryTime || "N/A"}
+                  logoUrl={`${CDN_URL}${restaurant.info.cloudinaryImageId}`} 
+                />
+              </Link>
+            ) : null 
           ))
         ) : (
           <p>No restaurants available</p>
