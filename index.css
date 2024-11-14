@@ -280,3 +280,43 @@
   background-color: #0073e6;
   color: #fff;
 }
+.user-card {
+  background-color: #f4f4f9;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin: 20px auto;
+  width: 300px;
+  text-align: center;
+  font-family: 'Arial', sans-serif;
+}
+
+.user-card h2 {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.user-card h3 {
+  font-size: 18px;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.user-card h4 {
+  font-size: 16px;
+  color: #0077b6;
+  margin-bottom: 10px;
+  word-wrap: break-word;
+}
+
+.user-card h2, .user-card h3, .user-card h4 {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.user-card:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  transform: scale(1.05);
+  transition: all 0.3s ease;
+}
