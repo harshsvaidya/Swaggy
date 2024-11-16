@@ -1,12 +1,31 @@
-import React from 'react';
+import React from "react";
 
-const RestaurantCard = ({ resName, cuisines, rating, deliveryTime, logoUrl }) => (
-  <div className="res-card" style={{ backgroundColor: "#f0f0f0", padding: "15px", margin: "10px", borderRadius: "10px" }}>
-    <img className="res-logo" src={logoUrl} alt="Restaurant Logo" style={{ width: "100%", borderRadius: "10px" }} />
-    <h3>{resName || "Restaurant Name"}</h3>
-    <h4>{Array.isArray(cuisines) ? cuisines.join(", ") : cuisines || "Cuisine Types"}</h4>
-    <h4>{rating ? `${rating} stars` : "4.4 stars"}</h4>
-    <h4>{deliveryTime ? `${deliveryTime} minutes` : "38 minutes"}</h4>
+const RestaurantCard = ({ resName, cuisines, rating, deliveryTime, logoUrl, price }) => (
+  <div className="bg-gray-100 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 m-4 w-64">
+    {logoUrl && (
+      <img
+        className="w-full h-40 object-cover rounded-md"
+        src={logoUrl}
+        alt="Restaurant Logo"
+      />
+    )}
+    <div className="mt-4">
+      <h3 className="text-lg font-bold text-gray-800 truncate">{resName || "Restaurant Name"}</h3>
+      <p className="text-sm text-gray-600 truncate">
+        {Array.isArray(cuisines) ? cuisines.join(", ") : cuisines || "Cuisine Types"}
+      </p>
+      <div className="flex justify-between items-center mt-2">
+        <span className="text-sm text-yellow-600 font-medium">{rating ? `${rating} ⭐` : "4.4 ⭐"}</span>
+        <span className="text-sm text-gray-500">{deliveryTime ? `${deliveryTime} min` : "38 min"}</span>
+      </div>
+
+      {/* Display Cost for Each Food Item */}
+      {price && (
+        <div className="mt-2">
+          <p className="text-sm text-gray-800 font-semibold">Price: ₹{price}</p>
+        </div>
+      )}
+    </div>
   </div>
 );
 

@@ -8,7 +8,7 @@ import useOnlineStatus from "../../utils/useOnlineStatus";
 const Body = () => {
   const [listofRestaurants, setListofRestaurants] = useState([]);
   const [filteredListofRestaurants, setFilteredListofRestaurants] = useState([]);
-  const [loading, setLoading] = useState(true); // Loading state for shimmer
+  const [loading, setLoading] = useState(true); 
   const [searchText, setSearchText] = useState("");
 
   console.log("Body Rendered");
@@ -19,7 +19,7 @@ const Body = () => {
 
   const fetchData = async () => {
     try {
-      setLoading(true); // Show loading during fetch
+      setLoading(true); 
       const response = await fetch(
         "https://www.swiggy.com/dapi/restaurants/list/v5?lat=22.30080&lng=73.20430&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING"
       );
@@ -35,7 +35,7 @@ const Body = () => {
     } catch (error) {
       console.error("Failed to fetch data:", error);
     } finally {
-      setLoading(false); // Hide loading after fetch completes
+      setLoading(false); 
     }
   };
 
@@ -48,27 +48,26 @@ const Body = () => {
 
   const onlineStatus = useOnlineStatus();
 
-  // Show a message if the user is offline
   if (!onlineStatus) {
-    return <h1>Looks like you are offline! Please check your intenet connection</h1>;
+    return <h1 className="text-center text-xl text-red-500">Looks like you are offline! Please check your internet</h1>;
   }
 
   return loading ? (
     <Shimmer />
   ) : (
-    <div className="body">
-      <div className="filter">
+    <div className="bg-gray-100 min-h-screen py-6 px-4">
+      <div className="flex justify-between items-center mb-6">
         {/* Search functionality */}
-        <div className="search">
+        <div className="flex items-center space-x-2">
           <input
             type="search"
-            placeholder="What's on your mind"
+            placeholder="Search restaurants..."
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
+            className="p-2 w-80 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
           <button
             onClick={() => {
-              console.log(searchText);
               if (searchText.trim() === "") {
                 setFilteredListofRestaurants(listofRestaurants);
               } else {
@@ -78,18 +77,21 @@ const Body = () => {
                 setFilteredListofRestaurants(filteredRestaurants);
               }
             }}
+            className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors"
           >
             Search
           </button>
         </div>
 
-        {/* Filter Top Rated Restaurants */}
-        <button className="filter-btn" onClick={handleFilter}>
+        <button
+          className="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600 transition-colors"
+          onClick={handleFilter}
+        >
           Top Rated Restaurants
         </button>
       </div>
 
-      <div className="res-container">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
         {filteredListofRestaurants.length > 0 ? (
           filteredListofRestaurants.map((restaurant) =>
             restaurant?.info ? (
@@ -107,7 +109,7 @@ const Body = () => {
             ) : null
           )
         ) : (
-          <p>No restaurants available</p>
+          <p className="col-span-full text-center text-gray-500">No restaurants available</p>
         )}
       </div>
     </div>

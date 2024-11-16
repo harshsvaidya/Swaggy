@@ -6,6 +6,7 @@ import About from "./components/About";
 import Contact from "./components/Contact";
 import Error from './components/Error';
 import RestaurantMenu from "./components/RestaurantMenu";
+import Cart from "./Cart";
 // import Grocery from "./components/Grocery";
 // we will use lazy loading here for grocery
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
@@ -48,6 +49,10 @@ const appRouter = createBrowserRouter([
         path: "/restaurants/:resId",  // Corrected path
         element: <RestaurantMenu />,
       },
+      {
+        path: "/Cart",
+        element: <Cart />,
+      }
     ],
     errorElement: <Error />
   },
