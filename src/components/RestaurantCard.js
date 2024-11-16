@@ -10,13 +10,20 @@ const RestaurantCard = ({ resName, cuisines, rating, deliveryTime, logoUrl, pric
       />
     )}
     <div className="mt-4">
-      <h3 className="text-lg font-bold text-gray-800 truncate">{resName || "Restaurant Name"}</h3>
-      <p className="text-sm text-gray-600 truncate">
+      {/* Ensure the restaurant name wraps to new lines */}
+      <h3 className="text-lg font-bold text-gray-1000 break-words">
+        {resName || "Restaurant Name"}
+      </h3>
+      {/* Ensure cuisines text wraps to new lines */}
+      <p className="text-sm text-gray-800 break-words">
         {Array.isArray(cuisines) ? cuisines.join(", ") : cuisines || "Cuisine Types"}
       </p>
       <div className="flex justify-between items-center mt-2">
-        <span className="text-sm text-yellow-600 font-medium">{rating ? `${rating} ⭐` : "4.4 ⭐"}</span>
-        <span className="text-sm text-gray-500">{deliveryTime ? `${deliveryTime} min` : "38 min"}</span>
+                  <span className="text-sm text-yellow-600 font-medium">{rating ? `${rating} ⭐` : "4.4 ⭐"}</span>
+        <span className="text-sm text-gray-500">
+
+          {deliveryTime ? `${deliveryTime} min` : "38 min"}
+        </span>
       </div>
 
       {/* Display Cost for Each Food Item */}

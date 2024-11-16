@@ -7,16 +7,14 @@ const Header = () => {
     const [isLogin, setIsLogin] = useState(false);
     const onlineStatus = useOnlineStatus();
     return (
-        <div className="flex items-center justify-between bg-gray-100 shadow-md px-4 py-2">
-            {/* Logo Section */}
+        <div className="flex items-center justify-between bg-orange-100 shadow-md m-2 mb-2 px-4 py-2">
             <div className="flex items-center">
                 <img className="w-16 h-16 object-contain" src={LOGO_URL} alt="logo" />
-                <h3 className="text-lg font-bold text-gray-800 ml-2">Quikr</h3>
+                <h3 className="text-lg font-bold text-gray-800 ml-2"><Link className="hover:text-blue-600" to="/">Quickr</Link></h3>
             </div>
             
-            {/* Navigation Section */}
             <div className="flex items-center space-x-6">
-                <ul className="flex items-center space-x-4 text-gray-700">
+                <ul className="flex items-center space-x-4 text-pink-700">
                     <li className="flex items-center">
                         <span className="font-semibold">Online Status:</span>
                         <span className="ml-1">{onlineStatus ? "✅" : "🔴"}</span>
@@ -38,7 +36,6 @@ const Header = () => {
                     </li>
                 </ul>
                 
-                {/* Login/Logout Button */}
                 <button
                     className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600"
                     onClick={() => setIsLogin(!isLogin)}

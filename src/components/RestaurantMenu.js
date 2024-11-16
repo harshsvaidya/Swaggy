@@ -2,7 +2,7 @@ import React from "react";
 import Shimmer from "./Shimmer";
 import { useParams } from "react-router-dom";
 import useRestaurantMenu from "../../utils/useRestaurantMenu";
-import RestaurantCard from "./RestaurantCard";  // Import RestaurantCard component
+import RestaurantCard from "./RestaurantCard";  
 
 const RestaurantMenu = () => {
   const { resId } = useParams();
@@ -17,7 +17,7 @@ const RestaurantMenu = () => {
 
   const getPrice = (price) => {
     if (price && !isNaN(price)) {
-      return (price / 100).toFixed(2); // Assuming price is in paise, converting it to rupees
+      return (price / 100).toFixed(2); 
     }
     return null;
   };
@@ -32,11 +32,10 @@ const RestaurantMenu = () => {
         <h3 className="text-lg text-gray-600">{costForTwoMessage || "Cost for two not available"}</h3>
       </div>
 
-      {/* Menu Items Grid */}
       <div className="mt-8">
         <h2 className="text-2xl font-semibold text-gray-700 border-b pb-2 mb-4">Menu</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {itemCards.length > 0 ? (
+        {itemCards.length > 0 ? (
             itemCards.map((item, index) => {
               const price = getPrice(item.card?.info?.price);
               const defaultPrice = getPrice(item.card?.info?.defaultPrice);
@@ -49,8 +48,8 @@ const RestaurantMenu = () => {
                     cuisines={item.card?.info?.cuisine || []}
                     rating={item.card?.info?.avgRating}
                     deliveryTime={item.card?.info?.deliveryTime}
-                    logoUrl={item.card?.info?.cloudinaryImageId} // Adjust as needed
-                    price={price || defaultPrice}  // Passing price to RestaurantCard
+                    logoUrl={item.card?.info?.cloudinaryImageId} 
+                    price={price || defaultPrice}  
                   />
                 );
               }

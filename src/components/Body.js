@@ -41,7 +41,7 @@ const Body = () => {
 
   const handleFilter = () => {
     const filteredRestaurants = listofRestaurants.filter(
-      (res) => parseFloat(res.info?.avgRating) > 4.0
+      (res) => parseFloat(res.info?.avgRating) > 4.5
     );
     setFilteredListofRestaurants(filteredRestaurants);
   };
@@ -57,7 +57,6 @@ const Body = () => {
   ) : (
     <div className="bg-gray-100 min-h-screen py-6 px-4">
       <div className="flex justify-between items-center mb-6">
-        {/* Search functionality */}
         <div className="flex items-center space-x-2">
           <input
             type="search"
