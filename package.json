@@ -1,5 +1,5 @@
 {
-  "name": "lecture---3-laying-foundation",
+  "name": "foodApplication",
   "version": "1.0.0",
   "scripts": {
     "start": "parcel index.html",
