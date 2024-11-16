@@ -2,10 +2,11 @@
 import { LOGO_URL } from "../../utils/constants";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import useOnlineStatus from "../../utils/useOnlineStatus"; 
 
 const Header = () => {
     const [isLogin, setIsLogin] = useState(false);
-    console.log("Header rendered")
+    const onlineStatus = useOnlineStatus();
 
     // Let me show you few concepts about useEffect hooks.
     // here there are three cases in useEffect.
@@ -24,6 +25,9 @@ const Header = () => {
             <div className="nav-item">
                 <ul>
                     <li>
+                        Online Status: {onlineStatus ? "✅":"🔴"}
+                    </li>
+                    <li>
                         <Link>Home</Link>
                     </li>
                     <li>
@@ -31,6 +35,9 @@ const Header = () => {
                     </li>
                     <li>
                     <Link to="/contact">Contact Us</Link>
+                    </li>
+                    <li>
+                        <Link to="/grocery">Grocery</Link>
                     </li>
                     <li>
                     <Link>Cart</Link>

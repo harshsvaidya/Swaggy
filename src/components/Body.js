@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import RestaurantCard from './RestaurantCard'; 
-import { CDN_URL } from '../../utils/constants';
-import Shimmer from './Shimmer';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import RestaurantCard from "./RestaurantCard";
+import { CDN_URL } from "../../utils/constants";
+import Shimmer from "./Shimmer";
+import { Link } from "react-router-dom";
+import useOnlineStatus from "../../utils/useOnlineStatus";
 
 const Body = () => {
   const [listofRestaurants, setListofRestaurants] = useState([]);
@@ -45,6 +46,13 @@ const Body = () => {
     setFilteredListofRestaurants(filteredRestaurants);
   };
 
+  const onlineStatus = useOnlineStatus();
+
+  // Show a message if the user is offline
+  if (!onlineStatus) {
+    return <h1>Looks like you are offline! Please check your intenet connection</h1>;
+  }
+
   return loading ? (
     <Shimmer />
   ) : (
@@ -64,7 +72,6 @@ const Body = () => {
               if (searchText.trim() === "") {
                 setFilteredListofRestaurants(listofRestaurants);
               } else {
-                // Otherwise, filter based on the search text
                 const filteredRestaurants = listofRestaurants.filter((res) =>
                   res.info.name.toLowerCase().includes(searchText.toLowerCase())
                 );
@@ -84,19 +91,21 @@ const Body = () => {
 
       <div className="res-container">
         {filteredListofRestaurants.length > 0 ? (
-          filteredListofRestaurants.map((restaurant) => (
+          filteredListofRestaurants.map((restaurant) =>
             restaurant?.info ? (
               <Link key={restaurant.info.id} to={"/restaurants/" + restaurant.info.id}>
                 <RestaurantCard
                   resName={restaurant.info.name}
-                  cuisines={restaurant.info.cuisines ? restaurant.info.cuisines.join(", ") : "Various"}
+                  cuisines={
+                    restaurant.info.cuisines ? restaurant.info.cuisines.join(", ") : "Various"
+                  }
                   rating={restaurant.info.avgRating || "N/A"}
                   deliveryTime={restaurant.info.sla?.deliveryTime || "N/A"}
-                  logoUrl={`${CDN_URL}${restaurant.info.cloudinaryImageId}`} 
+                  logoUrl={`${CDN_URL}${restaurant.info.cloudinaryImageId}`}
                 />
               </Link>
-            ) : null 
-          ))
+            ) : null
+          )
         ) : (
           <p>No restaurants available</p>
         )}
