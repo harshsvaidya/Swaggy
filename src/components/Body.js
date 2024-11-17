@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from "react";
-import RestaurantCard from "./RestaurantCard";
-import { CDN_URL } from "../../utils/constants";
+import React, { useState, useEffect, useContext } from "react";
+import RestaurantCard, { withPromotedLabel } from "./RestaurantCard";
+import { CDN_URL } from "../utils/constants";
 import Shimmer from "./Shimmer";
 import { Link } from "react-router-dom";
-import useOnlineStatus from "../../utils/useOnlineStatus";
+import useOnlineStatus from "../utils/useOnlineStatus";
 
 const Body = () => {
   const [listofRestaurants, setListofRestaurants] = useState([]);
   const [filteredListofRestaurants, setFilteredListofRestaurants] = useState([]);
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState("");
 
-  console.log("Body Rendered");
+  const RestaurantCardPromoted = withPromotedLabel(RestaurantCard);
 
   useEffect(() => {
     fetchData();
@@ -19,7 +19,7 @@ const Body = () => {
 
   const fetchData = async () => {
     try {
-      setLoading(true); 
+      setLoading(true);
       const response = await fetch(
         "https://www.swiggy.com/dapi/restaurants/list/v5?lat=22.30080&lng=73.20430&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING"
       );
@@ -35,7 +35,7 @@ const Body = () => {
     } catch (error) {
       console.error("Failed to fetch data:", error);
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
@@ -88,22 +88,36 @@ const Body = () => {
         >
           Top Rated Restaurants
         </button>
+        <label>UserName:</label>
+        <input className="border border-black p-2" />
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
         {filteredListofRestaurants.length > 0 ? (
           filteredListofRestaurants.map((restaurant) =>
             restaurant?.info ? (
-              <Link key={restaurant.info.id} to={"/restaurants/" + restaurant.info.id}>
-                <RestaurantCard
-                  resName={restaurant.info.name}
-                  cuisines={
-                    restaurant.info.cuisines ? restaurant.info.cuisines.join(", ") : "Various"
-                  }
-                  rating={restaurant.info.avgRating || "N/A"}
-                  deliveryTime={restaurant.info.sla?.deliveryTime || "N/A"}
-                  logoUrl={`${CDN_URL}${restaurant.info.cloudinaryImageId}`}
-                />
+              <Link key={restaurant.info.id} to={`/restaurants/${restaurant.info.id}`}>
+                {restaurant.info.promoted ? (
+                  <RestaurantCardPromoted
+                    resName={restaurant.info.name}
+                    cuisines={
+                      restaurant.info.cuisines ? restaurant.info.cuisines.join(", ") : "Various"
+                    }
+                    rating={restaurant.info.avgRating || "N/A"}
+                    deliveryTime={restaurant.info.sla?.deliveryTime || "N/A"}
+                    logoUrl={`${CDN_URL}${restaurant.info.cloudinaryImageId}`}
+                  />
+                ) : (
+                  <RestaurantCard
+                    resName={restaurant.info.name}
+                    cuisines={
+                      restaurant.info.cuisines ? restaurant.info.cuisines.join(", ") : "Various"
+                    }
+                    rating={restaurant.info.avgRating || "N/A"}
+                    deliveryTime={restaurant.info.sla?.deliveryTime || "N/A"}
+                    logoUrl={`${CDN_URL}${restaurant.info.cloudinaryImageId}`}
+                  />
+                )}
               </Link>
             ) : null
           )

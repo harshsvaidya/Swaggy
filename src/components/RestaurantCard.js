@@ -10,7 +10,6 @@ const RestaurantCard = ({ resName, cuisines, rating, deliveryTime, logoUrl, pric
       />
     )}
     <div className="mt-4">
-      {/* Ensure the restaurant name wraps to new lines */}
       <h3 className="text-lg font-bold text-gray-1000 break-words">
         {resName || "Restaurant Name"}
       </h3>
@@ -35,5 +34,16 @@ const RestaurantCard = ({ resName, cuisines, rating, deliveryTime, logoUrl, pric
     </div>
   </div>
 );
+
+export const withPromotedLabel =(RestaurantCard) =>{
+  return(props) => {
+    return (
+      <div>
+        <label className="absolute bg-black text-white">Promoted</label>
+        <RestaurantCard {...props}/>
+      </div>
+    );
+  };
+};
 
 export default RestaurantCard;
