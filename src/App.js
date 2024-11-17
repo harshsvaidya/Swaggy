@@ -8,8 +8,10 @@ import Header from "./components/Header";
 import Body from "./components/Body";
 import Contact from "./components/Contact";
 import RestaurantMenu from "./components/RestaurantMenu";
-import Cart from "./Cart";
+import Cart from "./components/Cart";
 import Error from "./components/Error";
+import  {Provider} from "react-redux";
+import appStore from "./utils/appStore";
 
 // Lazy Loading for About and Grocery components
 const About = lazy(() => import("./components/About"));
@@ -17,10 +19,13 @@ const Grocery = lazy(() => import("./components/Grocery"));
 
 const AppLayout = () => {
   return (
+    <Provider store={appStore}>
     <div className="app">
       <Header />
-      <Outlet /> {/* This will render the child routes */}
+      <Outlet /> 
     </div>
+    {/* </UserContext.Provider> */}
+    </Provider>
   );
 };
 

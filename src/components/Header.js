@@ -3,6 +3,7 @@ import { useState, useEffect, useContext } from "react";
 import { Link, useLocation } from "react-router-dom";
 import useOnlineStatus from "../utils/useOnlineStatus";
 import { UserContext } from "../utils/UserContext"; // Corrected import path
+import { useSelector } from "react-redux"; // Corrected import
 
 const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -10,6 +11,8 @@ const Header = () => {
     const onlineStatus = useOnlineStatus();
     const location = useLocation();
     const { loggedInUser, logoutUser } = useContext(UserContext); // Assuming 'logoutUser' exists
+    const cartItems = useSelector((store) => store.cart.items); // Get cart items from Redux store
+    console.log(cartItems);
 
     useEffect(() => {
         const savedTheme = localStorage.getItem("darkMode");
@@ -78,7 +81,9 @@ const Header = () => {
                     <NavigationLink to="/about">About</NavigationLink>
                     <NavigationLink to="/contact">Contact Us</NavigationLink>
                     <NavigationLink to="/grocery">Grocery</NavigationLink>
-                    <NavigationLink to="/cart">Cart</NavigationLink>
+                    <NavigationLink to="/cart">
+                        <span className="font-bold text-xl">Cart - ({cartItems.length} items)</span>
+                    </NavigationLink>
                     <li>
                         {loggedInUser ? (
                             <span className="font-semibold">{loggedInUser.name}</span> // Display the logged-in user's name
@@ -110,7 +115,6 @@ const Header = () => {
                 </button>
             </div>
 
-            {/* Mobile Menu */}
             {isMenuOpen && (
                 <div className={`lg:hidden absolute top-0 left-0 right-0 ${isDarkMode ? 'bg-gray-900' : 'bg-orange-100'} p-4 shadow-lg space-y-4`}>
                     <ul className="space-y-4 text-center">

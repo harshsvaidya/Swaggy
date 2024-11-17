@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import Shimmer from "./Shimmer";
 import { useParams } from "react-router-dom";
 import useRestaurantMenu from "../utils/useRestaurantMenu";
+import { addItem } from "../utils/cartSlice";
+import { useDispatch } from 'react-redux';
 
-const CDN_URL = "https://image.cdn.swiggy.com/"; // Base CDN URL for images
+const CDN_URL = "https://image.cdn.swiggy.com/";
 
 const RestaurantMenu = () => {
   const { resId } = useParams();
@@ -20,6 +22,11 @@ const RestaurantMenu = () => {
     (c) => c.card?.card?.["@type"] === "type.googleapis.com/swiggy.presentation.food.v2.ItemCategory"
   );
 
+  const dispatch = useDispatch();
+  const handleAddItem = (item) => {
+    dispatch(addItem(item));
+  }
+
   const getPrice = (price) => {
     if (price && !isNaN(price)) {
       return (price / 100).toFixed(2);
@@ -29,6 +36,10 @@ const RestaurantMenu = () => {
 
   const toggleCategory = (index) => {
     setOpenCategoryIndex(openCategoryIndex === index ? null : index);
+  };
+
+  const getImageUrl = (imageId) => {
+    return imageId ? `${CDN_URL}${imageId}` : "/fallback-image.jpg"; // Fallback image if imageId is missing
   };
 
   return (
@@ -74,16 +85,24 @@ const RestaurantMenu = () => {
                 {isOpen && (
                   <ul className="list-disc pl-5 text-gray-600 mt-4">
                     {itemCards?.map((item, itemIndex) => {
-                      const { name, price, defaultPrice } = item.card?.info || {};
+                      const { name, price, defaultPrice, imageId } = item.card?.info || {};
                       const formattedPrice = price || defaultPrice
                         ? (price || defaultPrice) / 100
                         : "Price not available";
+                      const imageUrl = getImageUrl(imageId);
 
                       return (
                         <li key={itemIndex} className="mb-6 flex items-center justify-between">
                           {/* Food Item Content */}
                           <div className="flex items-center space-x-4">
-                            <div className="flex-shrink-0 w-16 h-16 bg-gray-200 rounded-md"></div> {/* Placeholder for image */}
+                            <div className="flex-shrink-0 w-16 h-16">
+                              {/* Display the actual food image */}
+                              <img
+                                src={imageUrl}
+                                alt={name || "Food Item"}
+                                className="w-full h-full object-cover rounded-md"
+                              />
+                            </div>
                             <div>
                               <p className="font-medium text-gray-800">{name || "Item Name"}</p>
                               <p className="text-sm text-gray-600">₹{formattedPrice}</p>
@@ -91,7 +110,10 @@ const RestaurantMenu = () => {
                           </div>
 
                           {/* Add Button */}
-                          <button className="py-2 px-4 bg-indigo-600 text-white rounded-md shadow-md hover:bg-indigo-700 focus:outline-none transition duration-200 transform hover:scale-105">
+                          <button
+                            className="py-2 px-4 bg-indigo-600 text-white rounded-md shadow-md hover:bg-indigo-700 focus:outline-none transition duration-200 transform hover:scale-105"
+                            onClick={() => handleAddItem(item)}
+                          >
                             Add +
                           </button>
                         </li>

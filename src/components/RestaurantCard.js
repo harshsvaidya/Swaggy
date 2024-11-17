@@ -18,14 +18,13 @@ const RestaurantCard = ({ resName, cuisines, rating, deliveryTime, logoUrl, pric
         {Array.isArray(cuisines) ? cuisines.join(", ") : cuisines || "Cuisine Types"}
       </p>
       <div className="flex justify-between items-center mt-2">
-                  <span className="text-sm text-yellow-600 font-medium">{rating ? `${rating} ⭐` : "4.4 ⭐"}</span>
+                  <span className="text-sm text-yellow-600 font-medium">{rating ? `${rating} ⭐` : "4.0 ⭐"}</span>
         <span className="text-sm text-gray-500">
 
           {deliveryTime ? `${deliveryTime} min` : "38 min"}
         </span>
       </div>
 
-      {/* Display Cost for Each Food Item */}
       {price && (
         <div className="mt-2">
           <p className="text-sm text-gray-800 font-semibold">Price: ₹{price}</p>
