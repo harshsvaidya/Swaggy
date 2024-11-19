@@ -6,10 +6,10 @@ import { removeItem } from '../utils/cartSlice';
 const Cart = () => {
   const dispatch = useDispatch();
   const cartItems = useSelector((store) => store.cart.items);
-
-  // Handle item removal
+  console.log(cartItems);
+  
   const handleRemoveItem = (itemId) => {
-    dispatch(removeItem(itemId));  // Ensure itemId is passed correctly
+    dispatch(removeItem(itemId)); 
   };
 
   return (

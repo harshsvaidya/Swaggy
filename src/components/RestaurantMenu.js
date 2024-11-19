@@ -2,16 +2,17 @@ import React, { useState } from "react";
 import Shimmer from "./Shimmer";
 import { useParams } from "react-router-dom";
 import useRestaurantMenu from "../utils/useRestaurantMenu";
+import { useDispatch } from "react-redux";
 import { addItem } from "../utils/cartSlice";
-import { useDispatch } from 'react-redux';
 
 const CDN_URL = "https://image.cdn.swiggy.com/";
 
 const RestaurantMenu = () => {
   const { resId } = useParams();
   const resInfo = useRestaurantMenu(resId);
-
   const [openCategoryIndex, setOpenCategoryIndex] = useState(null);
+
+  const dispatch = useDispatch();
 
   if (resInfo === null) {
     return <Shimmer />;
@@ -20,18 +21,21 @@ const RestaurantMenu = () => {
   const { name, cuisines, costForTwoMessage } = resInfo.cards[2]?.card?.card?.info || {};
   const categories = resInfo.cards[4]?.groupedCard?.cardGroupMap?.REGULAR.cards.filter(
     (c) => c.card?.card?.["@type"] === "type.googleapis.com/swiggy.presentation.food.v2.ItemCategory"
-  );
+  ) || [];
 
-  const dispatch = useDispatch();
   const handleAddItem = (item) => {
-    dispatch(addItem(item));
-  }
+    const { id, name, price, defaultPrice, imageId } = item.card?.info || {};
+    const formattedPrice = price || defaultPrice || 0;
+    const imageUrl = `${CDN_URL}${imageId}`;
+    const itemData = {
+      id,
+      name,
+      price: formattedPrice / 100,
+      imageUrl,
+      quantity: 1,
+    };
 
-  const getPrice = (price) => {
-    if (price && !isNaN(price)) {
-      return (price / 100).toFixed(2);
-    }
-    return null;
+    dispatch(addItem(itemData));
   };
 
   const toggleCategory = (index) => {
@@ -39,7 +43,7 @@ const RestaurantMenu = () => {
   };
 
   const getImageUrl = (imageId) => {
-    return imageId ? `${CDN_URL}${imageId}` : "/fallback-image.jpg"; // Fallback image if imageId is missing
+    return imageId ? `${CDN_URL}${imageId}` : "/fallback-image.jpg"; // Fallback image
   };
 
   return (
@@ -60,17 +64,15 @@ const RestaurantMenu = () => {
           categories.map((category, index) => {
             const isOpen = openCategoryIndex === index;
             const { title, itemCards } = category.card?.card || {};
-            const totalItems = itemCards?.length || 0;
 
             return (
               <div key={index} className="mb-6 border-b pb-4">
-                {/* Category Title */}
                 <div
                   className="flex justify-between items-center cursor-pointer bg-gray-100 hover:bg-gray-200 p-4 rounded-md shadow-sm"
                   onClick={() => toggleCategory(index)}
                 >
                   <h3 className="text-lg font-semibold text-gray-800">
-                    {title || "Category Title"} ({totalItems})
+                    {title || "Category Title"} ({itemCards?.length || 0})
                   </h3>
                   <span
                     className={`transition-transform transform ${
@@ -81,7 +83,6 @@ const RestaurantMenu = () => {
                   </span>
                 </div>
 
-                {/* Item List */}
                 {isOpen && (
                   <ul className="list-disc pl-5 text-gray-600 mt-4">
                     {itemCards?.map((item, itemIndex) => {
@@ -93,10 +94,8 @@ const RestaurantMenu = () => {
 
                       return (
                         <li key={itemIndex} className="mb-6 flex items-center justify-between">
-                          {/* Food Item Content */}
                           <div className="flex items-center space-x-4">
                             <div className="flex-shrink-0 w-16 h-16">
-                              {/* Display the actual food image */}
                               <img
                                 src={imageUrl}
                                 alt={name || "Food Item"}
@@ -108,8 +107,6 @@ const RestaurantMenu = () => {
                               <p className="text-sm text-gray-600">₹{formattedPrice}</p>
                             </div>
                           </div>
-
-                          {/* Add Button */}
                           <button
                             className="py-2 px-4 bg-indigo-600 text-white rounded-md shadow-md hover:bg-indigo-700 focus:outline-none transition duration-200 transform hover:scale-105"
                             onClick={() => handleAddItem(item)}
