@@ -29,16 +29,6 @@ const AppLayout = () => {
   );
 };
 
-const App = () => {
-  const [userName, setUserName] = useState("John Doe"); // Define the state for userName
-
-  return (
-    <UserProvider value={{ loggedInUser: userName, setUserName }}>
-      <RouterProvider router={appRouter} /> {/* Use RouterProvider to handle routing */}
-    </UserProvider>
-  );
-};
-
 const appRouter = createBrowserRouter([
   {
     path: "/",
@@ -80,6 +70,17 @@ const appRouter = createBrowserRouter([
     errorElement: <Error />,
   },
 ]);
+
+const App = () => {
+  const [userName, setUserName] = useState("John Doe"); // Define the state for userName
+
+  return (
+    <UserProvider value={{ loggedInUser: userName, setUserName }}>
+      <RouterProvider router={appRouter} /> {/* Use RouterProvider to handle routing */}
+    </UserProvider>
+  );
+};
+
 
 // Render the app to the DOM
 const root = ReactDOM.createRoot(document.getElementById("root"));
