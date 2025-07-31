@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import RestaurantCard, { withPromotedLabel } from "./RestaurantCard";
-import { CDN_URL } from "../utils/constants";
+import { CDN_URL, RESTAURANT_API } from "../utils/constants";
+import { mockRestaurants } from "../utils/mockData";
 import Shimmer from "./Shimmer";
 import { Link } from "react-router-dom";
 import useOnlineStatus from "../utils/useOnlineStatus";
@@ -20,20 +21,110 @@ const Body = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const response = await fetch(
-        "https://www.swiggy.com/dapi/restaurants/list/v5?lat=22.30080&lng=73.20430&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING"
-      );
-      const data = await response.json();
-      const restaurants = data?.data?.cards[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants;
+      
+      // Try multiple API endpoints
+      const apiEndpoints = [
+        // Using your local proxy server
+        "http://localhost:5000/api/dapi/restaurants/list/v5?lat=22.30080&lng=73.20430&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING",
+        
+        // Direct API call
+        RESTAURANT_API,
+        
+        // CORS anywhere proxy
+        "https://cors-anywhere.herokuapp.com/https://www.swiggy.com/dapi/restaurants/list/v5?lat=22.30080&lng=73.20430&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING"
+      ];
+      
+      let data = null;
+      let usedEndpoint = '';
+      
+      for (const endpoint of apiEndpoints) {
+        try {
+          console.log(`Trying endpoint: ${endpoint}`);
+          
+          const response = await fetch(endpoint, {
+            method: 'GET',
+            headers: {
+              'Accept': 'application/json',
+              'Accept-Language': 'en-US,en;q=0.9',
+              'Cache-Control': 'no-cache',
+              'Pragma': 'no-cache',
+            }
+          });
+          
+          if (response.ok) {
+            data = await response.json();
+            usedEndpoint = endpoint;
+            console.log(`Successfully fetched from: ${endpoint}`);
+            break;
+          }
+        } catch (error) {
+          console.log(`Failed to fetch from ${endpoint}:`, error.message);
+          continue;
+        }
+      }
+      
+      if (!data) {
+        throw new Error("All API endpoints failed");
+      }
+      
+      console.log("Full API Response:", data);
+      console.log("Used endpoint:", usedEndpoint);
+      
+      // Try multiple possible paths for restaurant data
+      let restaurants = null;
+      
+      // Search through all cards to find restaurants
+      if (data?.data?.cards) {
+        console.log("Total cards found:", data.data.cards.length);
+        
+        for (let i = 0; i < data.data.cards.length; i++) {
+          const card = data.data.cards[i];
+          const cardType = card?.card?.card?.["@type"];
+          const cardId = card?.card?.card?.id;
+          
+          console.log(`Card ${i}: type=${cardType}, id=${cardId}`);
+          
+          // Look for restaurant grid
+          const restaurantList = card?.card?.card?.gridElements?.infoWithStyle?.restaurants;
+          
+          if (Array.isArray(restaurantList) && restaurantList.length > 0) {
+            restaurants = restaurantList;
+            console.log(`✅ Found ${restaurantList.length} restaurants in card ${i}`);
+            break;
+          }
+          
+          // Also check for restaurant collection
+          const restaurantCollection = card?.card?.card?.restaurants;
+          if (Array.isArray(restaurantCollection) && restaurantCollection.length > 0) {
+            restaurants = restaurantCollection;
+            console.log(`✅ Found ${restaurantCollection.length} restaurants in collection at card ${i}`);
+            break;
+          }
+        }
+      }
 
-      if (Array.isArray(restaurants)) {
+      if (Array.isArray(restaurants) && restaurants.length > 0) {
+        console.log("✅ Setting restaurants:", restaurants.length, "items");
+        console.log("First restaurant sample:", restaurants[0]);
         setListofRestaurants(restaurants);
         setFilteredListofRestaurants(restaurants);
       } else {
-        console.error("No restaurants found in fetched data");
+        console.error("❌ No restaurants found in API response");
+        console.log("Available data structure:", Object.keys(data || {}));
+        
+        // Load mock data for development
+        console.log("🔄 Loading mock data for development...");
+        setListofRestaurants(mockRestaurants);
+        setFilteredListofRestaurants(mockRestaurants);
+        console.log("🎭 Mock data loaded successfully");
       }
     } catch (error) {
-      console.error("Failed to fetch data:", error);
+      console.error("❌ All fetch attempts failed:", error);
+      
+      // Load mock data as final fallback
+      console.log("🎭 Loading mock data as fallback...");
+      setListofRestaurants(mockRestaurants);
+      setFilteredListofRestaurants(mockRestaurants);
     } finally {
       setLoading(false);
     }
