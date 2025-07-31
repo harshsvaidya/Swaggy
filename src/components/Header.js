@@ -103,7 +103,7 @@ const Header = () => {
                         }
                     }}
                 >
-                    {loggedInUser ? "Logout" : "Login"}
+                    {loggedInUser ? "Login" : "Logout"}
                 </button>
 
                 {/* Dark Mode Toggle */}
