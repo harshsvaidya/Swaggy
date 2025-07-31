@@ -6,7 +6,9 @@
     "dev": "parcel index.html",
     "clean-cache": "parcel cache clean",
     "build": "parcel build index.html",
-    "test": "jest"
+    "test": "jest",
+    "proxy": "node src/components/proxy-server.js",
+    "dev:proxy": "concurrently \"npm run proxy\" \"npm run dev\""
   },
   "keywords": [
     "Namaste",
